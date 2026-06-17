@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const authRoute = require('./routes/auth.routes');
+const reflectionRoutes = require("./routes/reflection.routes");
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.get('/health', (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/reflections", reflectionRoutes);
 
 module.exports = app;
