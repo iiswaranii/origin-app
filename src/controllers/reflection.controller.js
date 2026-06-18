@@ -27,15 +27,32 @@ async function getReflections(req, res) {
     try {
         const userId = req.user.id;
 
-        const result = await pool.query(`SELECT id, user_id, content, mood, source, created_at, updated_at FROM reflections WHERE user_id = $1 ORDER BY created_at DESC`, [userId]);
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 20;
+        const offset = (page - 1) * limit;
+
+        const reflectionsResult = await pool.query(`SELECT id, user_id, content, mood, source, created_at, updated_at FROM reflections WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`, [userId, limit, offset]);
+
+        const countResult = await pool.query(`SELECT COUNT(*) FROM reflections WHERE user_id = $1`, [userId]);
+
+        const total = Number(countResult.rows[0].count);
+        const totalPages = Math.ceil(total / limit);
 
         return res.json({
             success: true,
-            message: "Reflections fetched successfully",
+            message: "Reflections fetched successfully!",
             data: {
-                reflections: result.rows,
-            }
-        })
+                reflections: reflectionsResult.rows,
+                pagination: {
+                    page,
+                    limit,
+                    total,
+                    totalPages,
+                    hasNextPage: page < totalPages,
+                    hasPreviousPage: page > 1,
+                },
+            },
+        });
 
     }catch(error) {
         console.error("Get reflections error:", error);

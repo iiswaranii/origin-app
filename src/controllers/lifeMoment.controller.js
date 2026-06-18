@@ -40,22 +40,40 @@ async function createLifeMoment (req, res) {
 async function getLifeMoments(req, res) {
     try {
         const userId = req.user.id;
+
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 20;
+        const offset = (page - 1) * limit;
     
         const result = await pool.query(
             `SELECT 
             id, user_id, title, content, occurred_at, emotional_tone, source, created_at, updated_at
             FROM life_moments
             WHERE user_id = $1
-            ORDER BY created_at DESC`,
-            [userId]
+            ORDER BY created_at DESC
+            LIMIT $2 OFFSET $3`,
+            [userId, limit, offset]
         );
-    
+
+        const countResult = await pool.query(`SELECT COUNT(*) FROM life_moments WHERE user_id = $1`, [userId]);
+        
+        const total = Number(countResult.rows[0].count);
+        const totalPages = Math.ceil(total / limit);
+
         return res.json({
-            success: true,
-            message: "Life moments fetched successfully",
-            data: {
-                lifeMoments: result.rows,
+        success: true,
+        message: "Life moments fetched successfully",
+        data: {
+            lifeMoments: lifeMomentsResult.rows,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPreviousPage: page > 1,
             },
+        },
         });
     } catch (error) {
         console.error("Get life moments error:", error);
