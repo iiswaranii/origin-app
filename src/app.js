@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const authRoute = require('./routes/auth.routes');
 const reflectionRoutes = require("./routes/reflection.routes");
 const lifeMomentRoutes = require("./routes/lifeMoment.routes");
+const taxonomyRoutes = require("./routes/taxonomy.routes");
 
 const app = express();
 
@@ -24,5 +25,6 @@ app.get('/health', (req, res) => {
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/reflections", reflectionRoutes);
 app.use("/api/v1/life-moments", lifeMomentRoutes);
+app.use("/api/v1", taxonomyRoutes);
 
 module.exports = app;
