@@ -7,6 +7,7 @@ const authRoute = require('./routes/auth.routes');
 const reflectionRoutes = require("./routes/reflection.routes");
 const lifeMomentRoutes = require("./routes/lifeMoment.routes");
 const taxonomyRoutes = require("./routes/taxonomy.routes");
+const patternRoutes = require("./routes/pattern.routes");
 
 const app = express();
 
@@ -26,5 +27,6 @@ app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/reflections", reflectionRoutes);
 app.use("/api/v1/life-moments", lifeMomentRoutes);
 app.use("/api/v1", taxonomyRoutes);
+app.use("/api/v1/patterns", patternRoutes);
 
 module.exports = app;
