@@ -14,7 +14,7 @@ async function ensureReflectionBelongsToUser(reflectionId, userId) {
 async function addReflectionEmotion (req, res) {
     try {
         const userId = req.user.id;
-        const reflectionId = req.params.body;
+        const reflectionId = req.params.id;
         const { tagId, confidence } = req.body;
 
         const ownsReflection = await ensureReflectionBelongsToUser(reflectionId, userId);

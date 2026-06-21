@@ -3,13 +3,13 @@ const pool = require('../config/db');
 async function getEmotionPatterns (req, res) {
     try {
         const userId = req.user.id;
-        const result = await query(`SELECT e.id, e.name, e.description, COUNT(*) AS count 
+        const result = await pool.query(`SELECT e.id, e.name, e.description, COUNT(*) AS count 
             FROM reflection_emotions re 
             JOIN reflections r ON r.id = re.reflection_id
             JOIN emotions e ON e.id = re.emotion_id
             WHERE r.user_id=$1
             GROUP BY e.id, e.name, e.description
-            ORDER BY BY count DESC, e.name ASC`, [userId]);
+            ORDER BY count DESC, e.name ASC`, [userId]);
 
         return res.status(200).json({
             success: true,
